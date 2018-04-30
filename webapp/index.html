@@ -1,0 +1,2473 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=1, minimum-scale=0.1, maximum-scale=4">
+
+    <title>Cuevas de MASAGÓ y del Duende</title>
+
+    <script type="text/javascript" src="../js/masagobymanchax.min.js"></script>
+    <script type="text/javascript" src="thirdparty/iscroll-master/build/iscroll.js"></script>
+
+
+    <script type="text/javascript">
+
+        var CONTENTINDEXSECTIONS_LENGTH = 14;
+
+
+        var aScroll_comienzo;
+        var aScroll_comedor;
+        var aScroll_celebraciones;
+        var aScroll_miradores;
+        var aScroll_antiguedades;
+        var aScroll_museo;
+        var aScroll_platos;
+        var aScroll_villaescusaflamenco;
+        var aScroll_amadorgonzalezvillanueva;
+        var aScroll_icarreratraildealcaladeljucar;
+        var aScroll_nochevieja2016;
+
+
+        var allScrolls = [ ];
+
+
+
+
+        var ONMENUCLICKGOTOLAST = false;
+
+
+        var VERTICALSCROLLMANIPULATIONTHRESHOLD = 64;
+
+
+
+        function masagoSectionMenuItemClicked_OnlyIfOnLast () {
+
+            var aNumScrolls = allScrolls.length;
+
+            for( var aScrollIdx=0; aScrollIdx < aNumScrolls; aScrollIdx++) {
+
+                var aScroll = allScrolls[ aScrollIdx];
+                if( aScroll) {
+
+                    var aScrollNumSlides = aScroll._v_NumSlides;
+                    if( aScrollNumSlides) {
+
+                        var aScrollCurrentPage = aScroll.currentPage;
+                        if( aScrollCurrentPage) {
+
+                            var aScrollCurrentPage_pageX = aScrollCurrentPage.pageX;
+
+                            if( aScrollCurrentPage_pageX >= ( aScrollNumSlides - 1)) {
+
+                                if( ONMENUCLICKGOTOLAST) {
+                                    aScroll.goToPage( aScrollNumSlides - 2, 0, 0);
+                                }
+                                else {
+                                    aScroll.goToPage( 0, 0, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        function masagoSectionMenuItemClicked () {
+
+            var aNumScrolls = allScrolls.length;
+
+            for( var aScrollIdx=0; aScrollIdx < aNumScrolls; aScrollIdx++) {
+
+                var aScroll = allScrolls[ aScrollIdx];
+                if( aScroll) {
+                    aScroll.goToPage( 0, 0, 0);
+                }
+            }
+        }
+
+
+
+        function pAttachMasagoSectionMenuItemClickedEventListener() {
+
+            pAttachMasagoSectionMenuItemClickedEventListener_WithScrollIndexPrefix( "00");
+
+
+            var aNumScrolls = allScrolls.length;
+
+            for( var aScrollIdx=0; aScrollIdx < aNumScrolls; aScrollIdx++) {
+
+                var aScroll = allScrolls[ aScrollIdx];
+                if( aScroll) {
+
+                    var aScroll_id = aScroll._v_Id;
+                    if( aScroll_id) {
+
+                        var aScrollIndexStr = "" + aScroll_id;
+                        if( aScrollIndexStr.length < 2) {
+                            aScrollIndexStr = "0" + aScrollIndexStr;
+                        }
+
+                        pAttachMasagoSectionMenuItemClickedEventListener_WithScrollIndexPrefix( aScrollIndexStr);
+                    }
+                }
+            }
+        }
+
+
+
+
+        function pAttachMasagoSectionMenuItemClickedEventListener_WithScrollIndexPrefix( theScrollIndexPrefix) {
+
+            if( !theScrollIndexPrefix) {
+                return;
+            }
+
+
+            for( var aSectionIdx=1; aSectionIdx <= CONTENTINDEXSECTIONS_LENGTH; aSectionIdx++) {
+
+                var aSectionIdxStr = "" + aSectionIdx;
+                if( aSectionIdxStr.length < 2) {
+                    aSectionIdxStr = "0" + aSectionIdxStr;
+                }
+
+                var aSectionMenuItemId = "masagoSectionMenuItem_" + theScrollIndexPrefix + "_" + aSectionIdxStr;
+
+                var aSectionMenuItemDOMelem = document.getElementById( aSectionMenuItemId);
+                if( aSectionMenuItemDOMelem) {
+
+                    aSectionMenuItemDOMelem.addEventListener("click", masagoSectionMenuItemClicked_OnlyIfOnLast /* masagoSectionMenuItemClicked */, false);
+                }
+            }
+        }
+
+
+
+
+
+
+
+        function pAttachAnteriorPosteriorEventListeners() {
+            var aNumScrolls = allScrolls.length;
+
+            for( var aScrollIdx=0; aScrollIdx < aNumScrolls; aScrollIdx++) {
+
+                var aScroll = allScrolls[ aScrollIdx];
+                if( aScroll) {
+
+                    var aScroll_id = aScroll._v_Id;
+                    if( aScroll_id) {
+
+                        var aScrollIndexStr = "" + aScroll_id;
+                        if( aScrollIndexStr.length < 2) {
+                            aScrollIndexStr = "0" + aScrollIndexStr;
+                        }
+
+                        var anAnteriorId = "anterior_" + aScrollIndexStr;
+
+                        var anAnteriorElement = document.getElementById( anAnteriorId);
+                        if( anAnteriorElement) {
+
+                            var aBoundAnteriorElementClickedHandler = pAnteriorClickedHandler.bind( null, aScrollIdx);
+                            anAnteriorElement.addEventListener( "click", aBoundAnteriorElementClickedHandler);
+                        }
+
+
+                        var anPosteriorId = "posterior_" + aScrollIndexStr;
+
+                        var anPosteriorElement = document.getElementById( anPosteriorId);
+                        if( anPosteriorElement) {
+
+                            var aBoundPosteriorElementClickedHandler = pPosteriorClickedHandler.bind( null, aScrollIdx);
+                            anPosteriorElement.addEventListener( "click", aBoundPosteriorElementClickedHandler);
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+        function pAttachIndicatorEventListeners() {
+
+            var aNumScrolls = allScrolls.length;
+
+            for( var aScrollIdx=0; aScrollIdx < aNumScrolls; aScrollIdx++) {
+
+                var aScroll = allScrolls[ aScrollIdx];
+                if( aScroll) {
+
+                    var aScroll_id = aScroll._v_Id;
+                    if( aScroll_id) {
+
+                        var aScrollIndexStr = "" + aScroll_id;
+                        if( aScrollIndexStr.length < 2) {
+                            aScrollIndexStr = "0" + aScrollIndexStr;
+                        }
+
+                        var anIndicatorElementId = "indicator_" + aScrollIndexStr;
+                        var anIndicatorElement = document.getElementById( anIndicatorElementId);
+                        if( anIndicatorElement) {
+
+                            var aBoundIndicatorElementClickedHandler = pIndicatorClickedHandler.bind( null, aScrollIdx);
+                            anIndicatorElement.addEventListener( "click", aBoundIndicatorElementClickedHandler);
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+        function pAttachClickToRenderYouTubeITrialListener() {
+
+            var aClickToRenderYouTubeITrialIFrame = document.getElementById( "scroller_icarreratraildealcaladeljucar_slide_youtube_clicktorender");
+            if( aClickToRenderYouTubeITrialIFrame) {
+                aClickToRenderYouTubeITrialIFrame.addEventListener( "click", pRenderYouTubeITrialIFrame);
+            }
+        }
+
+
+
+
+
+        function pRenderYouTubeITrialIFrame() {
+
+            var anIFrameHolder = document.getElementById( "scroller_icarreratraildealcaladeljucar_slide_youtube");
+            if( anIFrameHolder) {
+                anIFrameHolder.innerHTML = '<iframe width="1276" height="800" src="https://www.youtube.com/embed/2hz38uyjREg" frameborder="0" data-do-not-allowfullscreen></iframe>';
+            }
+        }
+
+
+
+
+
+
+
+        function pAttachClickToRenderYouTubeHombreListener() {
+
+            var aClickToRenderYouTubeHombreIFrame = document.getElementById( "scroller_amadorgonzalezvillanueva_slide_youtube_clicktorender");
+            if( aClickToRenderYouTubeHombreIFrame) {
+                aClickToRenderYouTubeHombreIFrame.addEventListener( "click", pRenderYouTubeHombreIFrame);
+            }
+
+
+            var aClickToRenderYouTubeHombreIFrame2 = document.getElementById( "scroller_amadorgonzalezvillanueva_slide_youtube2_clicktorender");
+            if( aClickToRenderYouTubeHombreIFrame2) {
+                aClickToRenderYouTubeHombreIFrame2.addEventListener( "click", pRenderYouTubeHombreIFrame2);
+            }
+        }
+
+
+
+
+
+
+        function pRenderYouTubeHombreIFrame() {
+
+            var anIFrameHolder = document.getElementById( "scroller_amadorgonzalezvillanueva_slide_youtube");
+            if( anIFrameHolder) {
+                anIFrameHolder.innerHTML = '<iframe width="1276" height="800" src="https://www.youtube.com/embed/x8d4NizvcWQ" frameborder="0" data-do-not-allowfullscreen></iframe>';
+            }
+        }
+
+
+
+        function pRenderYouTubeHombreIFrame2() {
+
+            var anIFrameHolder = document.getElementById( "scroller_amadorgonzalezvillanueva_slide_youtube2");
+            if( anIFrameHolder) {
+                anIFrameHolder.innerHTML = '<iframe width="1276" height="800" src="https://www.youtube.com/embed/SMLHFaQ4DCA" frameborder="0" data-do-not-allowfullscreen></iframe>';
+            }
+        }
+
+
+
+
+
+
+        function pAnteriorClickedHandler( theScrollIndex, theEvent) {
+
+            if( theScrollIndex < 0) {
+                return;
+            }
+
+            var aNumScrolls = allScrolls.length;
+
+            if( theScrollIndex >= aNumScrolls) {
+                return;
+            }
+
+            var aScroll = allScrolls[ theScrollIndex];
+            if( !aScroll) {
+                return;
+            }
+
+            var aNumSlides = aScroll._v_NumSlides;
+            if( !aNumSlides) {
+                return;
+            }
+
+
+            var aCurrentPage = aScroll.currentPage;
+            if( !aCurrentPage) {
+                return;
+            }
+
+
+            var aCurrentPageX = aCurrentPage.pageX;
+            if( !aCurrentPageX) {
+                return;
+            }
+
+            var aNewPage = aCurrentPageX - 1;
+            if( aNewPage >= aNumSlides) {
+                aNewPage = aNumSlides;
+            }
+
+            if( !( aNewPage == aCurrentPageX)) {
+                aScroll.goToPage( aNewPage, 200, false);
+            }
+
+        }
+
+
+
+
+
+
+
+        function pPosteriorClickedHandler( theScrollIndex, theEvent) {
+
+            if( theScrollIndex < 0) {
+                return;
+            }
+
+            var aNumScrolls = allScrolls.length;
+
+            if( theScrollIndex >= aNumScrolls) {
+                return;
+            }
+
+            var aScroll = allScrolls[ theScrollIndex];
+            if( !aScroll) {
+                return;
+            }
+
+            var aNumSlides = aScroll._v_NumSlides;
+            if( !aNumSlides) {
+                return;
+            }
+
+
+            var aCurrentPage = aScroll.currentPage;
+            if( !aCurrentPage) {
+                return;
+            }
+
+            var aCurrentPageX = aCurrentPage.pageX;
+
+            var aNewPage = aCurrentPageX + 1;
+            if( aNewPage >= aNumSlides) {
+                aNewPage = aNumSlides;
+            }
+
+            if( !( aNewPage == aCurrentPageX)) {
+                aScroll.goToPage( aNewPage, 200, false);
+            }
+        }
+
+
+
+
+
+
+
+
+        function pIndicatorClickedHandler( theScrollIndex, theEvent) {
+
+            if( theScrollIndex < 0) {
+                return;
+            }
+
+
+            if( !theEvent) {
+                return;
+            }
+
+            var aClick_x = theEvent.offsetX;
+            if( aClick_x < 0) {
+                return;
+            }
+
+            var aNumScrolls = allScrolls.length;
+
+            if( theScrollIndex >= aNumScrolls) {
+                return;
+            }
+
+            var aScroll = allScrolls[ theScrollIndex];
+            if( !aScroll) {
+                return;
+            }
+
+            var aNumSlides = aScroll._v_NumSlides;
+            if( !aNumSlides) {
+                return;
+            }
+
+            var aScroll_id = aScroll._v_Id;
+            if( !aScroll_id) {
+                return;
+            }
+
+            var aScrollIndexStr = "" + aScroll_id;
+            if( aScrollIndexStr.length < 2) {
+                aScrollIndexStr = "0" + aScrollIndexStr;
+            }
+
+
+            var anIndicatorElementId = "indicator_" + aScrollIndexStr;
+            var anIndicatorElement = document.getElementById( anIndicatorElementId);
+            if( !anIndicatorElement) {
+                return;
+            }
+
+            var anIndicator_width = anIndicatorElement.clientWidth;
+            if( !anIndicator_width) {
+                return;
+            }
+
+            var anIndicatorFractionClicked = aClick_x / anIndicator_width;
+            var anIndicatorIndexClicked    = Math.floor( aNumSlides *  anIndicatorFractionClicked);
+
+            aScroll.goToPage( anIndicatorIndexClicked, 0, 0);
+
+        }
+
+
+
+
+
+        function fSnapshotScrollsPage () {
+
+
+            var someScrollsPage = [ ];
+
+            var aNumScrolls = allScrolls.length;
+            for( var aScrollIdx=0; aScrollIdx < aNumScrolls; aScrollIdx++) {
+                var aScroll = allScrolls[ aScrollIdx];
+                if( aScroll) {
+
+                    var aScroll_page = aScroll.currentPage;
+                    if( typeof aScroll_page == "number") {
+
+                        someScrollsPage[ aScrollIdx] = aScroll_page;
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+        var aWakeUpForAutoSlideTimeout = null;
+
+        var aLastVerticalScroll        = null;
+        var aLastSnapshotScrollsPage   = null;
+        var aRecentManipulatedScroll   = null;
+        var aRecentManipulatedPage     = null;
+
+        var anAutoSlideIsRunning    = null;
+        var anAutoSlideLastScroll   = null;
+        var anAutoSlideLastPage     = null;
+
+
+
+        function pWakeUpForAutoSlide() {
+
+            if( aWakeUpForAutoSlideTimeout) {
+                try {
+                    window.clearTimeout( aWakeUpForAutoSlideTimeout);
+                }
+                catch( anException) {}
+
+                aWakeUpForAutoSlideTimeout = null;
+            }
+
+
+            if( anAutoSlideIsRunning) {
+                return;
+            }
+
+
+            var aNumScrolls = allScrolls.length;
+
+
+
+            var aNowSnapshotScrollsPage = fSnapshotScrollsPage();
+            if( !aNowSnapshotScrollsPage) {
+                return;
+            }
+
+            if( !( aNowSnapshotScrollsPage.length == aNumScrolls)) {
+                return;
+            }
+
+            if( !aLastSnapshotScrollsPage || !aLastSnapshotScrollsPage.length || ( aLastSnapshotScrollsPage.length < aNumScrolls)) {
+                aLastSnapshotScrollsPage = aNowSnapshotScrollsPage;
+                return;
+            }
+
+
+            var aLastSnapshotScrollsPageLen = aLastSnapshotScrollsPage.length;
+
+            if( !( aLastSnapshotScrollsPageLen == aNumScrolls)) {
+                return;
+            }
+
+
+
+
+            for( var aScrollIdx=0; aScrollIdx < aNumScrolls; aScrollIdx++) {
+
+                var aScroll = allScrolls[ aScrollIdx];
+                if( aScroll) {
+
+                    var aScroll_numPages = aScroll._v_NumSlides;
+                    if( aScroll_numPages) {
+
+                        var aNowScroll_page = aNowSnapshotScrollsPage[ aScrollIdx];
+
+                        var aLastScroll_page = undefined;
+
+                        if( aScrollIdx < aLastSnapshotScrollsPageLen) {
+                            aLastScroll_page = aLastSnapshotScrollsPage[ aScrollIdx];
+                        }
+
+                        if( !( aNowScroll_page === aLastScroll_page)) {
+
+                            var aMustStartSlide = true;
+
+                            aRecentManipulatedScroll = aScrollIdx;
+                            aRecentManipulatedPage   = aNowScroll_page;
+
+                            pScheduleNextWakeUpForAutoSlide();
+                            return;
+                        }
+                    }
+                }
+            }
+
+
+            /* No manipulation of scrollers detected */
+
+
+            var aDoc = document.documentElement;
+
+            var aNowVerticalScroll = ( window.pageYOffset || aDoc.scrollTop)  - ( aDoc.clientTop || 0);
+
+            if( !( typeof aLastVerticalScroll == "number")) {
+
+                aLastVerticalScroll = aNowVerticalScroll;
+
+                pScheduleNextWakeUpForAutoSlide();
+
+                return;
+            }
+
+            if( Math.abs( aNowVerticalScroll - aLastVerticalScroll) > VERTICALSCROLLMANIPULATIONTHRESHOLD) {
+
+                aLastVerticalScroll = aNowVerticalScroll;
+
+                pScheduleNextWakeUpForAutoSlide();
+
+                return;
+            }
+
+
+            var aScrollToSlideIndex = aRecentManipulatedScroll;
+            var aPageToSlide   = 0;
+
+            if( !( typeof aScrollToSlideIndex == "number")) {
+                aScrollToSlideIndex = 0;
+            }
+            if( aScrollToSlideIndex >= aNumScrolls) {
+                aScrollToSlideIndex = 0;
+                aPageToSlide   = 0;
+            }
+            else {
+
+                var aScrollToSlide = allScrolls[ aScrollToSlideIndex];
+                if( aScrollToSlide) {
+
+                    var aScrollToSlide_currentPage = aScrollToSlide.currentPage;
+
+                    var aScrollToSlide_numPages = aScrollToSlide._v_NumSlides;
+                    if( aScrollToSlide_numPages) {
+
+                        if( aScrollToSlide_currentPage < ( aScrollToSlide_numPages < 1)) {
+
+                            aPageToSlide   = aScrollToSlide_currentPage + 1;
+                        }
+                        else {
+
+                            if( aScrollToSlideIndex >= ( aNumScrolls - 1)) {
+                                aScrollToSlideIndex = 0;
+                                aPageToSlide   = 0;
+                            }
+                            else {
+                                aScrollToSlideIndex += 1;
+                                aPageToSlide   = 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            var aScrollToChange = allScrolls[ aScrollToSlideIndex];
+            if( aScrollToChange) {
+
+                aScrollToChange.goToPage( aPageToSlide, 300, true);
+            }
+
+            pScheduleNextWakeUpForAutoSlide();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function pInstantiateScrolls () {
+
+
+
+
+            aScroll_nochevieja2016 = new IScroll('#wrapper_nochevieja2016', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                indicators: {
+                    el: document.getElementById('indicator_13'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_nochevieja2016._v_NumSlides = 8;
+            aScroll_nochevieja2016._v_Id = 13;
+
+            allScrolls.push( aScroll_nochevieja2016);
+
+
+
+
+
+
+            aScroll_comienzo = new IScroll('#wrapper_comienzo', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_03'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_comienzo._v_NumSlides = 5;
+            aScroll_comienzo._v_Id = 3;
+
+            allScrolls.push( aScroll_comienzo);
+
+
+
+
+
+
+
+            aScroll_comedor = new IScroll('#wrapper_comedor', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_04'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_comedor._v_NumSlides = 5;
+            aScroll_comedor._v_Id = 4;
+
+            allScrolls.push( aScroll_comedor);
+
+
+
+
+
+
+
+            aScroll_celebraciones = new IScroll('#wrapper_celebraciones', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_05'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_celebraciones._v_NumSlides = 8;
+            aScroll_celebraciones._v_Id = 5;
+
+            allScrolls.push( aScroll_celebraciones);
+
+
+
+
+
+
+
+            aScroll_miradores = new IScroll('#wrapper_miradores', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_06'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_miradores._v_NumSlides = 6;
+            aScroll_miradores._v_Id = 6;
+
+            allScrolls.push( aScroll_miradores);
+
+
+
+
+
+
+
+            aScroll_antiguedades = new IScroll('#wrapper_antiguedades', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_07'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_antiguedades._v_NumSlides = 10;
+            aScroll_antiguedades._v_Id = 7;
+
+            allScrolls.push( aScroll_antiguedades);
+
+
+
+
+
+
+
+            aScroll_museo = new IScroll('#wrapper_museo', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_08'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_museo._v_NumSlides = 6;
+            aScroll_museo._v_Id = 8;
+
+            allScrolls.push( aScroll_museo);
+
+
+
+
+
+
+
+            aScroll_platos = new IScroll('#wrapper_platos', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_09'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_platos._v_NumSlides = 12;
+            aScroll_platos._v_Id = 9;
+
+            allScrolls.push( aScroll_platos);
+
+
+
+
+
+
+
+            aScroll_redessociales = new IScroll('#wrapper_redessociales', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_10'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_redessociales._v_NumSlides = 2;
+            aScroll_redessociales._v_Id = 10;
+
+            allScrolls.push( aScroll_redessociales);
+
+
+
+
+
+
+
+            aScroll_villaescusaflamenco = new IScroll('#wrapper_villaescusaflamenco', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_11'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_villaescusaflamenco._v_NumSlides = 4;
+            aScroll_villaescusaflamenco._v_Id = 11;
+
+            allScrolls.push( aScroll_villaescusaflamenco);
+
+
+
+
+
+            aScroll_amadorgonzalezvillanueva = new IScroll('#wrapper_amadorgonzalezvillanueva', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_01'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_amadorgonzalezvillanueva._v_NumSlides = 36;
+            aScroll_amadorgonzalezvillanueva._v_Id = 1;
+
+            allScrolls.push( aScroll_amadorgonzalezvillanueva);
+
+
+
+
+            aScroll_icarreratraildealcaladeljucar = new IScroll('#wrapper_icarreratraildealcaladeljucar', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                indicators: {
+                    el: document.getElementById('indicator_02'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_icarreratraildealcaladeljucar._v_NumSlides = 5;
+            aScroll_icarreratraildealcaladeljucar._v_Id = 2;
+
+
+            allScrolls.push( aScroll_icarreratraildealcaladeljucar);
+
+
+
+
+            aScroll_contactoymapa = new IScroll('#wrapper_contactoymapa', {
+                eventPassthrough: true,
+                preventDefault: false,
+                scrollX: true,
+                scrollY: false,
+                momentum: false,
+                snap: true,
+                snapSpeed: 400,
+                keyBindings: true,
+                tap: false,
+                indicators: {
+                    el: document.getElementById('indicator_12'),
+                    resize: false,
+                    interactive: false,
+                    listenX: true
+                }
+            });
+            aScroll_contactoymapa._v_NumSlides = 3;
+            aScroll_contactoymapa._v_Id = 12;
+
+            allScrolls.push( aScroll_contactoymapa);
+
+        }
+
+
+
+        function pRenderGoogleMapsIFrame() {
+
+            var anIFrameHolder = document.getElementById( "mapa_google_div_iframe");
+            if( anIFrameHolder) {
+                anIFrameHolder.innerHTML = '<iframe width="99%" height="751" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.es/maps?sll=39.193265,-1.429922&amp;sspn=0.006386,0.0109864&amp;cid=3195448235213623410&amp;q=Cuevas+de+MASAGÓ&amp;ie=UTF8&amp;hq=&amp;hnear=&amp;t=m&amp;iwloc=A&amp;ll=39.193265,-1.429922&amp;spn=0.006295,0.006295&amp;output=embed"></iframe>';
+            }
+        }
+
+
+
+
+
+
+        function loaded () {
+
+        }
+
+        /* document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false); */
+
+
+
+
+
+
+        var aInitialTimeout = window.setTimeout(
+                function() {
+                    pInstantiateScrolls();
+
+                    pAttachMasagoSectionMenuItemClickedEventListener();
+
+                    pAttachAnteriorPosteriorEventListeners();
+
+                    pAttachIndicatorEventListeners();
+
+                    pAttachClickToRenderYouTubeITrialListener();
+
+                    pAttachClickToRenderYouTubeHombreListener();
+                },
+                1000
+        );
+
+
+
+        var aGoogleMapsTimeout = window.setTimeout(
+                function() {
+                    pRenderGoogleMapsIFrame();
+                },
+                10000
+        );
+
+
+
+        var aYouTubeTimeout = window.setTimeout(
+                function() {
+                    pRenderYouTubeITrialIFrame();
+                    pRenderYouTubeHombreIFrame();
+                    pRenderYouTubeHombreIFrame2();
+                },
+                500
+        );
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+    <style type="text/css">
+
+        @font-face {
+            font-family: 'masago_chosen';
+            src: url('font/masago_chosen/masago_chosen-webfont.woff2') format('woff2'),
+            url('font/masago_chosen/masago_chosen-webfont.woff')  format('woff');
+            font-weight: normal;
+            font-style: normal;
+
+        }
+
+
+
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'masago_chosen';
+        }
+
+        h3.masagoSectionMenuItem {
+            font-size: 2.5em;
+        }
+
+
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        html {
+            -ms-touch-action: none;
+        }
+
+        body, ul, li {
+            padding: 0;
+            margin: 0;
+            border: 0;
+            background: url('img/masago/DSCN5832-crop-lighter.jpg');
+            background-size: contain;
+            -moz-background-size: contain;
+            -o-background-size: contain;
+            -webkit-background-size: contain;
+
+        }
+
+        body {
+            font-size: 12px;
+            font-family: ubuntu, helvetica, arial;
+            /* overflow: hidden;  this is important to prevent the whole page to bounce */
+        }
+
+        .slide {
+            width: 1336px;
+            height: 891px;
+            float: left;
+            background: url('img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg');
+        }
+
+        .painting {
+            width: 1276px;
+            height: 851px;
+            border-radius: 10px;
+            margin: 20px auto;
+            border: 1px solid #000;
+            box-shadow:
+            inset 2px 2px 6px rgba(255,255,255,0.6),
+            inset -2px -2px 6px rgba(0,0,0,0.6),
+            0 1px 8px rgba(0,0,0,0.8);
+        }
+
+
+
+
+
+
+
+
+        div.viewport_style {
+            position: relative;
+            width: 1336px;
+            height: 891px;
+            margin: 0 auto;
+            background: url('img/masago/DSCN5832-crop-lighter.jpg');
+            background-size: contain;
+            -moz-background-size: contain;
+            -o-background-size: contain;
+            -webkit-background-size: contain;
+            overflow: hidden;
+        }
+
+        div.wrapper_style {
+            width: 1336px;
+            height: 891px;
+            margin: 0 auto;
+        }
+
+        div.anteriorposterior_style {
+            position: relative;
+            z-index: 9000;
+            width: 30px;
+            height: 891px;
+            background: black;
+            cursor: pointer;
+        }
+
+        div.anterior_style {
+            float: left;
+            background: url('img/masago/DSCN5832-crop-lighter-anterior.jpg');
+            background-size: contain;
+            -moz-background-size: contain;
+            -o-background-size: contain;
+            -webkit-background-size: contain;
+        }
+
+        div.posterior_style {
+            float: right;
+            background: url('img/masago/DSCN5832-crop-lighter-posterior.jpg');
+            background-size: contain;
+            -moz-background-size: contain;
+            -o-background-size: contain;
+            -webkit-background-size: contain;
+        }
+
+
+        div.scroller_style { /* 4 imagenes * 1336 = 5344 */
+            position: absolute;
+            z-index: 1;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            height: 891px;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -o-text-size-adjust: none;
+            text-size-adjust: none;
+            background: url('img/masago/DSCN5832-crop-lighter.jpg');
+            background-size: contain;
+            -moz-background-size: contain;
+            -o-background-size: contain;
+            -webkit-background-size: contain;
+        }
+
+
+
+        div.indicator_style {
+            position: relative;
+            height: 20px;
+            margin: 10px auto;
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUBAMAAABohZD3AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUGCDYztyDUJgAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAGFBMVEUAAADNzc3Nzc3Nzc3Nzc3Nzc3Nzc3///8aWwwLAAAABnRSTlMAX5Ks3/nRD0HIAAAAAWJLR0QHFmGI6wAAAFtJREFUGFdjYGBgEHYNMWRAAJE0IHCEc5nSwEABxleD8JOgXMY0KBCA8FlgfAcIXwzGT4TwzWD8ZAjfDcZPgfDDYPxU7Hx09ejmoduH7h5096L7B8O/6OGBGl4APYg8TQ0XAScAAAAASUVORK5CYII=);
+        }
+
+        div.dotty_style {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            background: #777;
+        }
+
+
+        h1 {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+            text-align: center;
+            font-size: 6em;
+        }
+
+
+        h1 span.MASAGO_TopTitle {
+            font-size: 2em;
+        }
+
+        h2 {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+            text-align: center;
+            font-size: 4em;
+        }
+
+        h3 {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+            padding-left: 1em;
+            padding-right: 1em;
+            font-size: 3em;
+        }
+
+        h4 {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+            padding-left: 1em;
+            padding-right: 1em;
+            font-size: 2em;
+        }
+
+        h5 {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+            padding-left: 1em;
+            padding-right: 1em;
+            font-size: 1.5em;
+        }
+
+        h6 {
+            margin-top: 0.5em;
+            margin-bottom: 0;
+            padding-left: 1em;
+            padding-right: 1em;
+            font-size: 1em;
+        }
+
+    </style>
+</head>
+<body onload="loaded()">
+
+
+
+
+
+<h1 >Cuevas de <span class="MASAGO_TopTitle">MASAGÓ</span></h1>
+
+<!-- Nochevieja 2016-2017: Evento el 31 de Diciembre de 2016-->
+<a name="nochevieja2016"></a>
+<h2>Cena de Nochevieja 2016-2017</h2>
+<div class="viewport_style" id="viewport_nochevieja2016">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_13"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_13"></div>
+    <div class="wrapper_style" id="wrapper_nochevieja2016">
+        <div class="scroller_style" style="width: 10688px" id="scroller_nochevieja2016"> <!-- 8 imagenes * 1336 = 10688 --> <!-- 7 imagenes * 1336 = 9352 --> <!-- 6 imagenes * 1336 = 8016 -->  <!-- 4 imagenes * 1336 = 5344 --> <!-- WAS 3 imagenes * 1336 = 4008 -->
+            <div class="slide">
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg');  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <div style="width: 100%">
+                        <img style="display: block; margin-left: auto; margin-right: auto" src="/img/masago/CartelNochevieja2016-half-1276x851-01.jpg" >
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg');  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <div style="width: 100%">
+                        <img style="display: block; margin-left: auto; margin-right: auto" src="/img/masago/CartelNochevieja2016-half-1276x851-02.jpg" >
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg');  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <div style="width: 100%">
+                        <img style="display: block; margin-left: auto; margin-right: auto" src="/img/masago/CartelNochevieja2016-final-602x851.jpg" >
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg')" >
+                    <h3 style="margin-top: 2em; text-align: left">Cuevas de MASAGÓ</h3>
+                    <h3 style="margin-top: 2em; text-align: left">Teléfonos:&emsp;662 072 704&emsp;y&emsp;663 436 647 con Whatsapp</h3>
+                    <h3 style="margin-top: 1em; text-align: left"><a href="https://www.facebook.com/CuevasDeMasago/" target="_blank">Facebook: Cuevas de MASAGÓ y del Duende</a></h3>
+
+                    <h3 style="margin-top: 2em; text-align: left">Calle Libertad, 45</h3>
+                    <h3>02210 Alcalá del Jucar</h3>
+                    <h3>Albacete España</h3>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg')" >
+                    <h3 style="text-align: left">ENTRANTES</h3>
+                    <h3 style="margin-top: 1em; text-align: left">MARISCO</h3>
+                    <h3 style="margin-top: 1em; text-align: left">SORBETE DE LIMÓN AL&emsp; CAVA</h3>
+
+                    <h3 style="margin-top: 1em; text-align: left">SeGUNDOS A&emsp;ELEGIR</h3>
+                    <h3 style="margin-top: 1em; text-align: left">POSTRE</h3>
+
+                    <h3 style="margin-top: 1em; text-align: left">BODEGA</h3>
+
+                    <h3 style="margin-top: 1em; text-align: left">CAVA, CAFÉS, SIDRA, BOLSA DE COTILLÓN</h3>
+                    <h3 style="text-align: left">UVAS DE LA SUERTE + COPA INCLUIDA</h3>
+
+                    <h3 style="margin-top: 1em; text-align: left">DISCOTECA</h3>
+
+                    <h3 style="margin-top: 1em; text-align: left; padding-left: 3em">precio 60 €</h3>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg')" >
+                    <h3 style="text-align: left">ENTRANTES</h3>
+                    <h4 style="text-align: left">Jamón Ibérico</h4>
+                    <h4 style="text-align: left">Queso Manchego con Azafrán</h4>
+                    <h4 style="text-align: left">Ensalada de Frutas y Balsámicos</h4>
+                    <h4 style="text-align: left">Rollito de Salmón Ahumado Relleno de Crema de Queso y Mermelada de Tomate</h4>
+                    <br/>
+
+
+                    <h3 style="margin-top: 1em; text-align: left">MARISCO</h3>
+                    <h4 style="text-align: left">Gamba Roja y Blanca a la Plancha</h4>
+                    <h4 style="text-align: left">Cigalas y Gambas Cocidas</h4>
+                    <br/>
+
+                    <h3 style="margin-top: 1em; text-align: left">SORBETE DE LIMÓN AL&emsp; CAVA</h3>
+                    <br/>
+
+                    <h3 style="margin-top: 1em; text-align: left">SeGUNDOS A&emsp;ELEGIR</h3>
+                    <h4 style="margin-top: 1em; text-align: left">Lomo de Merluza en Salsa Verde</h4>
+                    <h4 style="margin-top: 1em; text-align: left">Carrillada de Ibérico con Salsa de Tinto y Guarnición</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg')" >
+
+                    <h3 style="margin-top: 1em; text-align: left">POSTRE</h3>
+                    <h4 style="text-align: left">Tarta de 3 Chocolates</h4>
+                    <h4 style="text-align: left">Tiramisú</h4>
+                    <h4 style="text-align: left">Pan de Calatrava</h4>
+                    <h4 style="text-align: left">Piña Natural</h4>
+                    <br/>
+
+                    <h3 style="margin-top: 1em; text-align: left">CAVA. CAFÉS, SIDRA, BOLSA DE COTILLÓN</h3>
+                    <h3 style="text-align: left">UVAS DE LA SUERTE + COPA INCLUIDA</h3>
+
+                    <h3 style="margin-top: 1em; text-align: left">BODEGA</h3>
+                    <h4 style="margin-top: 1em; text-align: left">Tinto Alterón</h4>
+                    <h4 style="margin-top: 1em; text-align: left">Blanco Maricubas</h4>
+                    <h4 style="margin-top: 1em; text-align: left">Rosado Espumoso Lambrusco</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_13_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_13_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="indicator_style" style="width: 230px; cursor: pointer" id="indicator_13"> <!-- 8 imagenes * 30 - 10 = 230 --> <!-- 7 imagenes * 30 - 10 = 200 --> <!-- 6 imagenes * 30 - 10 = 170 --> <!-- 4 imagenes * 30 - 10 = 110 --> <!-- WAS 3 imagenes * 30 - 10 = 80 -->
+    <div class="dotty_style" id="dotty_13"></div>
+</div>
+
+<br/>
+
+
+
+
+<h1 >Cuevas de <span class="MASAGO_TopTitle">MASAGÓ</span><br/>y del DUENDE</h1>
+<img style="display: block; margin: 0 auto" src="img/masago/MASAGO-Logo-1276-3ojos-dark.png">
+<h3 style="text-align: center;">Alcalá del Jucar &ensp; Albacete &ensp; España</h3>
+<br/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Comienzo: Alcala del Jucar, Puerta Masago y Pasillo -->
+<a name="comienzo"></a>
+<h2>Acceso a las Cuevas de MASAGÓ</h2>
+<div class="viewport_style" id="viewport_comienzo">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_03"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_03"></div>
+    <div class="wrapper_style" id="wrapper_comienzo">
+        <div class="scroller_style" style="width: 6680px" id="scroller_comienzo"> <!-- 5 imagenes * 1336 = 6680 --> <!-- 4 imagenes * 1336 = 5344 -->
+            <div class="slide"><div class="painting" style="background: url(img/masago/IMG_5559.18p.jpg);  background-size: contain;" ><h3 style="text-align: left;">Alcalá del Jucar vista desde el NorEste</h3></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5705.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" ><h3 style="text-align: right; ">Puerta de las <br/>Cuevas de MASAGÓ</h3></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5652.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" ><h3 style="text-align: center">Túnel de las Cuevas de MASAGÓ</h3></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5656.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" ><h3 style="text-align: center">Túnel de las Cuevas de MASAGÓ</h3></div></div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_03_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_03_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 140px; cursor: pointer" id="indicator_03"> <!-- 5 imagenes * 30 - 10 = 140 --> <!-- 4 imagenes * 30 - 10 = 110 -->
+    <div class="dotty_style" id="dotty_03"></div>
+</div>
+
+<br/>
+
+
+
+<!-- Comedor -->
+<a name="comedor"></a>
+<h2>Comedor en las Cuevas de MASAGÓ</h2>
+<div class="viewport_style" id="viewport_comedor">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_04"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_04"></div>
+    <div class="wrapper_style" id="wrapper_comedor">
+        <div class="scroller_style" style="width: 6680px" id="scroller_comedor">  <!-- 5 imagenes * 1336 = 6680 --> <!-- 4 imagenes * 1336 = 5344 -->
+            <div class="slide"><div class="painting" style="background: url(img/masago/IMG_5573.18p.jpg);  background-size: contain;"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5577.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5586.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5587.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_04_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_04_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 140px; cursor: pointer" id="indicator_04"> <!-- 5 imagenes * 30 - 10 = 140 --> <!-- 4 imagenes * 30 - 10 = 110 -->
+    <div class="dotty_style" id="dotty_04"></div>
+</div>
+
+<br/>
+
+
+
+
+<!-- Celebraciones -->
+<a name="celebraciones"></a>
+<h2>Celebraciones en las Cuevas de MASAGÓ</h2>
+<div class="viewport_style" id="viewport_celebraciones">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_05"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_05"></div>
+    <div class="wrapper_style" id="wrapper_celebraciones">
+        <div class="scroller_style" style="width: 10688px" id="scroller_celebraciones"> <!-- 8 imagenes * 1336 = 10688 --> <!-- 7 imagenes * 1336 = 9352 -->
+            <div class="slide"><div class="painting" style="background: url(img/masago/IMG_5592_2.18p.jpg);  background-size: contain;"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5593.18p.jpg);    background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5594.18p.jpg);    background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5594_2.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5598.18p.jpg);    background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5598_2.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5600_2.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_05_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_05_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 230px; cursor: pointer" id="indicator_05">  <!-- 8 imagenes * 30 - 10 = 230 --> <!-- 7 imagenes * 30 - 10 = 200 -->
+    <div class="dotty_style" id="dotty_05"></div>
+</div>
+
+<br/>
+
+
+
+
+<!--  Miradores al Rio Jucar -->
+<a name="miradores"></a>
+<h2>Miradores al Río Jucar en MASAGÓ</h2>
+<div class="viewport_style" id="viewport_miradores">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_06"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_06"></div>
+    <div class="wrapper_style" id="wrapper_miradores">
+        <div class="scroller_style" style="width: 8016px" id="scroller_miradores"> <!-- 6 imagenes * 1336 = 8016 --> <!-- 5 imagenes * 1336 = 6680 -->
+            <div class="slide"><div class="painting" style="background: url(img/masago/IMG_5602.18p.jpg);  background-size: contain;"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5605.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5607.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5608.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5610.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_06_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_06_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 170px; cursor: pointer" id="indicator_06"> <!-- 6 imagenes * 30 - 10 = 170 --> <!-- 5 imagenes * 30 - 10 = 140 -->
+    <div class="dotty_style" id="dotty_06"></div>
+</div>
+
+<br/>
+
+
+
+
+
+
+<!-- Antiguedades -->
+<a name="antiguedades"></a>
+<h2>Antiguedades en Cuevas de MASAGÓ</h2>
+<div class="viewport_style" id="viewport_antiguedades">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_07"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_07"></div>
+    <div class="wrapper_style" id="wrapper_antiguedades">
+        <div class="scroller_style" style="width: 13360px" id="scroller_antiguedades"> <!-- 10 imagenes * 1336 = 13360 --> <!-- 9 imagenes * 1336 = 12024 -->
+            <div class="slide"><div class="painting" style="background: url(img/masago/IMG_5699.18p.jpg);  background-size: contain;"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5632.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5634.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5636.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5662.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5664.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5667.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5670.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5673.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_07_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_07_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 290px; cursor: pointer" id="indicator_07"> <!-- 10 imagenes * 30 - 10 = 290 --> <!-- 9 imagenes * 30 - 10 = 260 -->
+    <div class="dotty_style" id="dotty_07"></div>
+</div>
+
+<br/>
+
+
+
+
+
+<!-- Museo de Fosiles y Minerales -->
+<a name="museo"></a>
+<h2>Fósiles , Minerales y Moneda en MASAGÓ</h2>
+<div class="viewport_style" id="viewport_museo">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_08"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_08"></div>
+    <div class="wrapper_style" id="wrapper_museo">
+        <div class="scroller_style" style="width: 8016px" id="scroller_museo"> <!-- 6 imagenes * 1336 = 8016  --> <!-- 5 imagenes * 1336 = 6680  -->
+            <div class="slide"><div class="painting" style="background: url(img/masago/IMG_5696.18p.jpg);  background-size: contain;"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5675.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5678.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5683.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"><h3 style="text-align: left;"></h3><br/><h4></h4></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5676.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"><h3 style="text-align: left;"></h3><br/><h4></h4></div></div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_08_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_08_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 170px; cursor: pointer" id="indicator_08"> <!-- 6 imagenes * 30 - 10 = 170 --> <!-- 5 imagenes * 30 - 10 = 140 -->
+    <div class="dotty_style" id="dotty_08"></div>
+</div>
+
+<br/>
+
+
+
+
+
+<!-- Platos -->
+<a name="platos"></a>
+<h2>Platos del Restaurante en MASAGÓ</h2>
+<div class="viewport_style" id="viewport_platos">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_09"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_09"></div>
+    <div class="wrapper_style" id="wrapper_platos">
+        <div class="scroller_style" style="width: 16032px" id="scroller_platos"> <!-- 12 imagenes * 1336 = 16032 --> <!-- 11 imagenes * 1336 = 14696 -->
+            <div class="slide"><div class="painting" style="background: url(img/masago/IMG_5726.18p.jpg);  background-size: contain;"><h3 style="text-align: left;">Judías con Perdiz</h3><br/><h4>Exquisito plato típico manchego a base de habichuelas blancas y perdiz.</h4></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5730.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"><h3 style="text-align: left;">Gazpachos Manchegos</h3><br/><h4>Plato típico manchego a base de carne (conejo, pollo, liebre o perdiz) y tortas de gazpacho elaboradas con harina.</h4></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5741.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"><h3 style="text-align: left;">Paella Mixta</h3><br/><h4>Arroz cocinado en paella con pollo y verduras.</h4></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5733.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"><h3 style="text-align: left;">Embutidos Caseros</h3><br/><h4>Embutidos manchegos caseros (chorizo, morcilla y lomo de orza) con guarnición.</h4></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5736.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"><h3 style="text-align: left;">Chuletas de Cordero</h3><br/><h4>Chuletas de cordero de denominación de origen manchego a la brasa con guarnición.</h4></div></div>
+            <div class="slide"><div class="painting" style="kk: 0; background: url(img/masago/IMG_5740.18p.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)"><h3 style="text-align: left;">Pan de Calatrava</h3><br/><h4>Típico bizcocho horneado remojado con huevos, leche y azúcar.</h4></div></div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 style="text-align: left;">Tapas</h3>
+                    <br/>
+                    <br/>
+                    <h4>Cazuela de Gambas</h4>
+                    <h4>Calamares Andaluza</h4>
+                    <h4>Pescados Fritos</h4>
+                    <h4>Piruletas de Langostinos</h4>
+                    <h4>Almejas MASAGÓ</h4>
+                    <h4>Sepia a la Plancha</h4>
+                    <br/>
+                    <br/>
+                    <h4>Pinchos Morunos</h4>
+                    <h4>Jamón y Queso</h4>
+                    <h4>Tabla de Ibéricos</h4>
+                    <h4>Lomo de Orza</h4>
+                    <br/>
+                    <br/>
+                    <h4>Queso Frito con Mermelada de Arándano</h4>
+                    <h4>Tostada de Queso de Cabra con Mermelada de Tomate</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 style="text-align: left;">Platos Combinados</h3>
+                    <br/>
+                    <br/>
+                    <h4>Todos con Ensalada, Patatas y Huevo</h4>
+                    <br/>
+                    <br/>
+                    <h4>Chuletas de Cordero</h4>
+                    <br/>
+                    <h4>Lomo de Cerdo</h4>
+                    <br/>
+                    <h4>Embutidos Caseros</h4>
+                    <br/>
+                    <h4>Pechuga de Pollo</h4>
+                    <br/>
+                    <h4>Sepia a la Plancha</h4>
+                    <br/>
+                    <h4>Emperador a la Plancha</h4>
+                    <br/>
+                    <h4>Revuelto de Espárragos</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 style="text-align: left;">Ensaladas</h3>
+                    <h4>Ensalada de la Huerta</h4>
+                    <h4>Ensalada MASAGÓ</h4>
+                    <h4>Ensalada de Canónigos con Frutos Secos y Queso de Cabra</h4>
+                    <br/>
+
+                    <h3 style="text-align: left;">Especialidades</h3>
+                    <h4>Gazpacho Manchego</h4>
+                    <h4>Judías con Perdiz</h4>
+                    <br/>
+
+                    <h3 style="text-align: left;">Arroces</h3>
+                    <h4>Paella Mixta (mínimo 2 personas)</h4>
+                    <h4>Paella de Marisco (mínimo 2 personas)</h4>
+                    <br/>
+
+                    <h3 style="text-align: left;">Sopas</h3>
+                    <h4>Sopa de Cocido</h4>
+                    <h4>Sopa Cubierta</h4>
+                    <h4>Consomé</h4>
+                    <h4>Puré de Verduras</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 style="text-align: left;">Carnes</h3>
+                    <h4>Entrecot de Ternera</h4>
+                    <h4>Solomillo de Ternera</h4>
+                    <h4>Chuletas de Lechal</h4>
+                    <h4>Chuletas de Cordero</h4>
+                    <h4>Lomo de Cerdo</h4>
+                    <h4>Pechuga de Pollo</h4>
+                    <br/>
+                    <br/>
+
+                    <h3 style="text-align: left;">Pescados</h3>
+                    <h4>Lenguado</h4>
+                    <h4>Sepia</h4>
+                    <h4>Emperador</h4>
+                    <br/>
+                    <br/>
+
+                    <h3 style="text-align: left;">Verduras</h3>
+                    <h4>Revuelto de Espárragos</h4>
+                    <h4>Parrillada de Verduras</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 style="text-align: left;">Postres</h3>
+                    <br/>
+                    <h4>Tartas de Tres Chocolates</h4>
+                    <br/>
+                    <h4>Pan de Calatrava</h4>
+                    <br/>
+                    <h4>Tarta de Chocolate</h4>
+                    <br/>
+                    <h4>Tarta de Tiramisú</h4>
+                    <br/>
+                    <h4>Tarta de Manzana</h4>
+                    <br/>
+                    <h4>Tarta de Queso</h4>
+                    <br/>
+                    <h4>Helados</h4>
+                    <h4>Frutas del tiempo</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_09_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_09_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 350px; cursor: pointer" id="indicator_09"> <!-- 12 imagenes * 30 - 10 = 350 --> <!-- 11 imagenes * 30 - 10 = 320 -->
+    <div class="dotty_style" id="dotty_09"></div>
+</div>
+
+<br/>
+
+
+
+
+
+
+
+
+
+
+<!-- Villaescusa Flamenco: Evento el 23 de Julio de 2016-->
+<a name="villaescusaflamenco"></a>
+<h2>Cena y Espectáculo &ensp; Sábado 23 de Julio</h2>
+<div class="viewport_style" id="viewport_villaescusaflamenco">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_11"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_11"></div>
+    <div class="wrapper_style" id="wrapper_villaescusaflamenco">
+        <div class="scroller_style" style="width: 5344px" id="scroller_villaescusaflamenco"> <!-- 4 imagenes * 1336 = 5344 --> <!-- WAS 3 imagenes * 1336 = 4008 -->
+            <div class="slide">
+                <div class="painting" style="background: url(img/villaescusaflamenco/8595179874_c92e88ffaf_o.w1276.jpg);  background-size: contain;" >
+                    <h3 style="text-align: left;">Villaescusa Flamenco</h3>
+                    <br/>
+                    <h4>Guitarra: Sergio Martinez</h4>
+
+
+                    <h3 style="margin-top: 4em">Cuevas de MASAGÓ<br/>y del DUENDE</h3>
+                    <h4>Alcalá del Jucar &ensp; Albacete &ensp; España</h4>
+                    <h4>noche del Sábado, 23 de Julio de 2016</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/villaescusaflamenco/8595140142_d4af04e96b_o.w1276.jpg);  background-size: contain; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <h3 style="text-align: right; color: white">Villaescusa Flamenco</h3>
+                    <br/>
+                    <h4 style="text-align: right; color: white">Guitarra: Sergio Martinez</h4>
+
+
+                    <h3 style="margin-top: 4em; text-align: right;color: white">Cuevas de MASAGÓ<br/>y del DUENDE</h3>
+                    <h4 style="text-align: right; color: white">Alcalá del Jucar &ensp; Albacete &ensp; España</h4>
+                    <h4 style="text-align: right; color: white">noche del Sábado, 23 de Julio de 2016</h4>
+                </div>
+            </div>
+            <div class="slide" >
+                <div class="painting" style="kk: 0; background: url(img/villaescusaflamenco/8595139972_33b9f55c0a_o.w1276.jpg);  background-size: contain; background-repeat: no-repeat; background-color: black; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <h3 style="text-align: right; color: white">Villaescusa Flamenco</h3>
+                    <br/>
+                    <h4 style="text-align: right; color: white">Guitarra: Sergio Martinez</h4>
+
+
+                    <h3 style="margin-top: 4em; text-align: right;color: white">Cuevas de MASAGÓ<br/>y del DUENDE</h3>
+                    <h4 style="text-align: right; color: white">Alcalá del Jucar &ensp; Albacete &ensp; España</h4>
+                    <h4 style="text-align: right; color: white">noche del Sábado, 23 de Julio de 2016</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_11_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_11_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="indicator_style" style="width: 110px; cursor: pointer" id="indicator_11"> <!-- 4 imagenes * 30 - 10 = 110 --> <!-- WAS 3 imagenes * 30 - 10 = 80 -->
+    <div class="dotty_style" id="dotty_11"></div>
+</div>
+
+<br/>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Lectura Dramatizada de Textos de Amador Gonzalez Villanueva: Evento el 26 de Agosto de 2016-->
+<a name="amadorgonzalezvillanueva"></a>
+<h2 style="margin-bottom: 0;">Lectura Dramatizada &emsp; Viernes 26 Agosto</h2>
+<div class="viewport_style" id="viewport_amadorgonzalezvillanueva">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_01"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_01"></div>
+    <div class="wrapper_style" id="wrapper_amadorgonzalezvillanueva">
+        <div class="scroller_style" style="width: 48096px" id="scroller_amadorgonzalezvillanueva"> <!-- 36 imagenes * 1336 = 48096 --> <!-- 35 imagenes * 1336 = 46760 --> <!-- 34 imagenes * 1336 = 45424 --> <!-- 4 imagenes * 1336 = 5344 --> <!-- WAS 3 imagenes * 1336 = 4008 -->
+            <div class="slide" >
+                <div  class="painting" style="background: url(img/masago/DSCN5832-crop-light-slidesize.jpg);  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <h3 style="cursor: pointer" id="scroller_amadorgonzalezvillanueva_slide_youtube_clicktorender">Pulsa para ver VÍDEO</h3>
+                    <div id="scroller_amadorgonzalezvillanueva_slide_youtube">
+                        <img src="img/amadorgonzalezvillanueva/AmadorGonzalezVillanueva-20160826-Cartel-ConLogoMasago-paintingsize.jpg"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" >
+                <div  class="painting" style="background: url(img/masago/DSCN5832-crop-light-slidesize.jpg);  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <h3 style="cursor: pointer" id="scroller_amadorgonzalezvillanueva_slide_youtube2_clicktorender">Pulsa para ver VÍDEO ambar</h3>
+                    <div id="scroller_amadorgonzalezvillanueva_slide_youtube2">
+                        <img src="img/amadorgonzalezvillanueva/AmadorGonzalezVillanueva-20160826-Cartel-ConLogoMasago-paintingsize.jpg"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"  style="background: url(img/amadorgonzalezvillanueva/AmadorGonzalezVillanueva-20160826-Cartel-ConLogoMasago-paintingsize.jpg);  background-size: cover;" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/AmadorGonzalezVillanueva-20160826-Cartel-ConLogoMasago-paintingsize-ancho.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide" >
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg');  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <h3 style="text-align: left; color: black">H&ensp;O&ensp;M&ensp;B&ensp;R&ensp;E</h3>
+
+                    <h4 style="text-align: left; color: black">Lectura Dramatizada de textos de</h4>
+                    <h3 style="text-align: left; color: black">Amador González Villanueva</h3>
+
+                    <h4 style="margin-top: 2em; text-align: left; color: black">Lectores</h4>
+                    <h3 style="text-align: left; color: black">Mabel&emsp;Blas&emsp;Santos</h3>
+
+                    <h4 style="margin-top: 2em; text-align: left; color: black">Música</h4>
+                    <h3 style="text-align: left;color: black">Mancha-Mex Rock & Roll &ensp;Antonio &ensp; Francisco&ensp;Joan</h3>
+
+                    <h4 style="margin-top: 2em; text-align: left; color: black">Logística y Organización</h4>
+                    <h3 style="text-align: left; color: black">Montse</h3>
+                    <h3 style="text-align: left; color: black">Asociación Artística de Alcalá del Jucar</h3>
+
+                    <h4 style="margin-top: 2em; text-align: left; color: black">Tarde del Viernes, 26 de Agosto de 2016 a las 20:30 horas &emsp; Alcalá del Jucar</h4>
+                    <h3 style="text-align: left;color: black">Cuevas de MASAGÓ y del DUENDE</h3>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-01.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-02.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-03.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-04.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-05.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-06.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-07.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-08.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-09.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-10.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-11.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-12.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-13.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-14.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-15.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-16.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-17.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-18.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-19.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-20.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-21.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-22.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-23.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-24.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-25.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-26.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-27.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-28.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-29.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting" style="kk: 0; background: url(img/amadorgonzalezvillanueva/Hombre-AmadorGonzalezVillanueva-fotograma-30.jpg);  background-size: cover; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_01_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_01_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="indicator_style" style="width: 1070px; cursor: pointer" id="indicator_01"> <!-- 36 imagenes * 30 - 10 = 1070 --> <!-- 35 imagenes * 30 - 10 = 1040 -->  <!-- 34 imagenes * 30 - 10 = 1010 -->  <!-- 4 imagenes * 30 - 10 = 110 --> <!-- WAS 3 imagenes * 30 - 10 = 80 -->
+    <div class="dotty_style" id="dotty_01"></div>
+</div>
+
+<br/>
+
+
+
+
+
+
+
+
+<!-- I Carrera Trail de Alcala del Jucar: Evento el 3 de Septiembre de 2016-->
+<a name="icarreratraildealcaladeljucar"></a>
+<h2 style="margin-bottom: 0;">I Carrera Trail de Alcalá del Júcar</h2>
+<h2 style="margin-bottom: 0; margin-top: 0;text-align: center">3 de Septiembre 2016</h2>
+<div class="viewport_style" id="viewport_icarreratraildealcaladeljucar">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_02"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_02"></div>
+    <div class="wrapper_style" id="wrapper_icarreratraildealcaladeljucar">
+        <div class="scroller_style" style="width: 6680px" id="scroller_icarreratraildealcaladeljucar"> <!-- 5 imagenes * 1336 = 6680 -->  <!-- 4 imagenes * 1336 = 5344 --> <!-- WAS 3 imagenes * 1336 = 4008 -->
+            <div class="slide" >
+                <div  class="painting" style="background: url(img/masago/DSCN5832-crop-light-slidesize.jpg);  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <h3 style="cursor: pointer" id="scroller_icarreratraildealcaladeljucar_slide_youtube_clicktorender">Pulsa para ver VÍDEO</h3>
+                    <div id="scroller_icarreratraildealcaladeljucar_slide_youtube">
+                        <img src="img/icarreratraildealcaladeljucar/ITrailAlcala-logo-paintingsize.jpg"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"  style="background: url(img/icarreratraildealcaladeljucar/ITrailAlcala-logo-paintingsize.jpg);  background-size: cover;" >
+                    <h3 style="margin-top: 2em; text-align: right; color: black">Transcurre Por</h3>
+                    <br/>
+                    <h3 style="text-align: right; color: black">Cuevas de MASAGÓ y del DUENDE</h3>
+                </div>
+            </div>
+            <div class="slide" >
+                <div class="painting" style="background: url('img/masago/DSCN5832-crop-light-slidesize.jpg');  background-size: cover; background-repeat: no-repeat; kkbackground: url(img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg)" >
+                    <h3 style="text-align: left; color: black">II Circuito Provincial de Trail Albacete</h3>
+                    <br/>
+                    <h4 style="text-align: left; color: black">Salida y meta</h4>
+                    <h4 style="text-align: left; color: black">Cañada de Dominguillo (Junto Piscina Municipal)</h4>
+                    <br/>
+                    <h4 style="text-align: left; color: black">Recogida de dorsales</h4>
+                    <h4 style="text-align: left; color: black">En Pista Polideportiva junto a Piscina a partir de las 16:00 horas hasta media hora antes de la salida</h4>
+                    <br/>
+                    <br/>
+                    <h4 style="text-align: left; color: black">El recorrido transcurre por</h4>
+                    <h3 style="text-align: left; color: black">Cueva de MASAGÓ y del DUENDE</h3>
+                    <h4 style="text-align: left; color: black">sendas, caminos y monte</h4>
+                    <br/>
+                    <h4 style="text-align: left; color: black">Distancia 17.8 km. Desnivel +740 m. y Desnivel - 738m</h4>
+
+
+                    <h4 style="margin-top: 3em; text-align: left; color: black">Alcalá del Jucar &ensp; Albacete &ensp; España</h4>
+                    <h4 style="text-align: left; color: black">3 de Septiembre de 2016 a las 17:30 horas</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"  style="background: url(img/icarreratraildealcaladeljucar/ITrailAlcala-recorrido-paintingsize.jpg);  background-size: cover;" >
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_02_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_02_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="indicator_style" style="width: 140px; cursor: pointer" id="indicator_02" > <!-- 5 imagenes * 30 - 10 = 140 -->  <!-- 4 imagenes * 30 - 10 = 110 --> <!-- WAS 3 imagenes * 30 - 10 = 80 -->
+    <div class="dotty_style" id="dotty_02"></div>
+</div>
+
+<br/>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Redes Sociales -->
+<a name="redessociales"></a>
+<h2>Cuevas de MASAGÓ en las redes sociales</h2>
+<div class="viewport_style" id="viewport_redessociales">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_10"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_10"></div>
+    <div class="wrapper_style" id="wrapper_redessociales">
+        <div class="scroller_style" style="width: 2672px" id="scroller_redessociales"> <!-- 2 imagenes * 1336 = 2672 --> <!-- 1 imagenes * 1336 = 1336 --> <!-- 3 imagenes * 1336 = 4008 -->
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h2 style="text-align: left; margin-left: 2em; margin-top: 2em;"><a href="https://www.facebook.com/CuevasDeMasago/" target="_blank">Facebook</a></h2>
+                    <br/>
+                    <h2 style="text-align: left; margin-left: 2em; margin-top: 2em;"><a href="https://twitter.com/cuevasmasago" target="_blank">Twitter</a></h2>
+                    <b2/>
+                    <h2 style="text-align: left; margin-left: 2em; margin-top: 2em;"><a href="https://www.tripadvisor.es/Restaurant_Review-g1435588-d10107840-Reviews-Cuevas_de_Masago-Alcala_del_Jucar_Province_of_Albacete_Castile_La_Mancha.html" target="_blank">TripAdvisor</a></h2>
+                    <br/>
+                    <h2 style="text-align: left; margin-left: 2em; margin-top: 2em;"><a href="https://plus.google.com/116282046546132010947/posts" target="_blank">Google+</a></h2>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_10_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_10_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 50px; cursor: pointer" id="indicator_10"> <!-- 2 imagenes * 30 - 10 = 50 -->  <!-- 1 imagenes * 30 - 10 = 20 --> <!-- 3 imagenes * 30 - 10 = 80 -->
+    <div class="dotty_style" id="dotty_10"></div>
+</div>
+
+<br/>
+
+
+
+
+
+<!-- Contacto -->
+<a name="contactoymapa"></a>
+<h2>Contacto y Mapa a las Cuevas de MASAGÓ</h2>
+<div class="viewport_style" id="viewport_contactoymapa">
+    <div class="anteriorposterior_style anterior_style"  id="anterior_12"></div>
+    <div class="anteriorposterior_style posterior_style" id="posterior_12"></div>
+    <div class="wrapper_style" id="wrapper_contactoymapa">
+        <div class="scroller_style" style="width: 4008px" id="scroller_contactoymapa"> <!-- 3 imagenes * 1336 = 4008 --> <!-- 2 imagenes * 1336 = 2672 -->
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 style="text-align: left;">Contacta con Nosotros</h3>
+                    <br/>
+                    <h4>Estamos en</h4>
+                    <h4>Calle Libertad, 45</h4>
+                    <h4>02210 Alcalá del Jucar</h4>
+                    <h4>Albacete España</h4>
+                    <br/>
+                    <h4>Teléfonos<br/>967 474 028<br/>662 072 704</h4>
+                    <br/>
+                    <h4>Restaurante@CuevasDeMASAGO.com</h4>
+                    <br/>
+                    <h3>Horario</h3>
+                    <h4>Invierno</h4>
+                    <h4>Lunes a Viernes de 11h a 18h</h4>
+                    <h4>Fin de semana de 10.30h a 21h</h4>
+                    <h4>Verano</h4>
+                    <h4>Lunes a Viernes de 10h a 20h</h4>
+                    <h4>Fin de semana de 10h a 22h</h4>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 style="text-align: left;">Mapa</h3>
+                    <div id="mapa_google_div_iframe" >
+                        <img src="img/masago/DSCN5832-crop-lighter-loading-slidesize.jpg" />
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_12_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_12_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="indicator_style" style="width: 80px; cursor: pointer" id="indicator_12"> <!-- 3 imagenes * 30 - 10 = 80 --> <!-- 2 imagenes * 30 - 10 = 50 -->
+    <div class="dotty_style" id="dotty_12"></div>
+</div>
+
+<br/>
+
+
+<!-- Secciones -->
+<a name="indicecontenidos"></a>
+<h2>Secciones en esta web de Cuevas de MASAGÓ</h2>
+<div class="viewport_style" id="viewport_indicecontenidos">
+    <div class="wrapper_style" id="wrapper_indicecontenidos">
+        <div class="scroller_style" style="width: 1336px" id="scroller_indicecontenidos"> <!-- 1 imagenes * 1336 = 1336 -->
+            <div class="slide">
+                <div class="painting"
+                     style="background: url('img/masago/DSCN5832-crop-light-paintingsize.jpg'); background-size: contain; -moz-background-size: contain; -o-background-size: contain; -webkit-background-size: contain;">
+                    <h3 id="masagoSectionMenuItem_00_13" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#nochevieja2016" >Cena Nochevieja 2016-2017</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_02" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comienzo" >Acceso</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_03" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#comedor" >Comedor</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_04" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#celebraciones" >Celebraciones</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_05" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#miradores" >Miradores</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_06" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#antiguedades" >Antiguedades</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_07" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#museo" >Fósiles, Minerales y Moneda</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_08" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#platos" >Platos y Menú</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_10" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#amadorgonzalezvillanueva" >Viernes 26 de Agosto Lectura Dramatizada Amador</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_11" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#villaescusaflamenco" >Sábado 23 de Julio Villaescusa Flamenco</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_01" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#icarreratraildealcaladeljucar" >Sábado 3 de Septiembre I Carrera Trail de Alcalá</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_09" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#redessociales" >Facebook Twitter TripAdvisor Google+</a></h3>
+                    <h3 id="masagoSectionMenuItem_00_12" style="text-align: left; margin-left: 1em; margin-top: 0.5em;" class="masagoSectionMenuItem" ><a href="#contactoymapa" >Contacto y Mapa</a></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br/>
+
+
+<h5 style="text-align: center;">Copyright 2016 Cuevas de Masagó todos los derechos reservados</h5>
+
+
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-83423218-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+
+
+</body>
+</html>
